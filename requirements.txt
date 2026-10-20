@@ -1,0 +1,4 @@
+# Runtime: the engine core, CLI and report server use only the Python
+# standard library, so a local/offline run needs nothing else.
+# (pytest / flake8 live in requirements-dev.txt; the optional cloud
+# warehouse clients live in requirements-connectors.txt.)

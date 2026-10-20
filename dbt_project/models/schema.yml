@@ -1,0 +1,94 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Audited orders table (staging)."
+    columns:
+      - name: order_id
+        description: "Primary key."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['PLACED', 'SHIPPED', 'DELIVERED']
+      - name: amount
+        tests:
+          - not_null
+
+  - name: stg_customers
+    description: "Audited customers table (staging)."
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: email
+        description: "Engine threshold: null rate must stay <= 5%."
+        tests:
+          - not_null
+
+  - name: stg_products
+    description: "Audited products table (staging)."
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+      - name: price
+        description: "Must be numeric (FLOAT). 'N/A' strings are type drift."
+        tests:
+          - not_null
+
+  - name: stg_events
+    description: "Audited events table (staging) - freshness monitored."
+    columns:
+      - name: event_id
+        tests:
+          - unique
+          - not_null
+      - name: event_type
+        tests:
+          - accepted_values:
+              values: ['CLICK', 'VIEW', 'PURCHASE', 'LOGIN']
+
+  - name: stg_inventory
+    description: "Audited inventory table (staging)."
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+
+  - name: stg_payments
+    description: "Audited payments table (staging)."
+    columns:
+      - name: payment_id
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        tests:
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: currency
+        description: "Required by the expected schema - missing column = schema drift."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['USD', 'EUR', 'GBP', 'INR', 'CAD']
+      - name: method
+        tests:
+          - accepted_values:
+              values: ['CARD', 'ACH', 'WIRE']

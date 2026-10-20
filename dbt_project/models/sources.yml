@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: warehouse
+    description: "Raw warehouse tables audited by the pipeline engine."
+    tables:
+      - name: orders
+      - name: customers
+      - name: products
+      - name: events
+      - name: inventory
+      - name: payments

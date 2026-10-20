@@ -1,0 +1,4 @@
+# Optional: real warehouse clients. Install only where audits run against
+# live Snowflake / BigQuery with credentials configured.
+snowflake-connector-python>=3.6
+google-cloud-bigquery>=3.11

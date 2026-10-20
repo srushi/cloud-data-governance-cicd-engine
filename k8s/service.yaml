@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-governance-validator
+  labels:
+    app: data-governance-validator
+spec:
+  type: ClusterIP
+  selector:
+    app: data-governance-validator
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

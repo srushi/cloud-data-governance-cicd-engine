@@ -1,0 +1,73 @@
+{
+  "reference_time": "2026-10-20T00:00:00Z",
+  "tables": {
+    "orders": {
+      "columns": [
+        {"name": "order_id", "type": "INTEGER", "max_null_rate": 0.0},
+        {"name": "customer_id", "type": "INTEGER", "max_null_rate": 0.02},
+        {"name": "order_ts", "type": "TIMESTAMP", "max_null_rate": 0.0},
+        {"name": "amount", "type": "FLOAT", "max_null_rate": 0.02},
+        {"name": "status", "type": "STRING", "max_null_rate": 0.02}
+      ],
+      "primary_key": ["order_id"],
+      "freshness": {"column": "order_ts", "max_age_hours": 168},
+      "row_count": {"min": 100, "max": 1000}
+    },
+    "customers": {
+      "columns": [
+        {"name": "customer_id", "type": "INTEGER", "max_null_rate": 0.0},
+        {"name": "full_name", "type": "STRING", "max_null_rate": 0.02},
+        {"name": "email", "type": "STRING", "max_null_rate": 0.05},
+        {"name": "signup_date", "type": "DATE", "max_null_rate": 0.02},
+        {"name": "country", "type": "STRING", "max_null_rate": 0.02}
+      ],
+      "primary_key": ["customer_id"],
+      "row_count": {"min": 100, "max": 1000}
+    },
+    "products": {
+      "columns": [
+        {"name": "product_id", "type": "INTEGER", "max_null_rate": 0.0},
+        {"name": "sku", "type": "STRING", "max_null_rate": 0.02},
+        {"name": "price", "type": "FLOAT", "max_null_rate": 0.05},
+        {"name": "category", "type": "STRING", "max_null_rate": 0.02}
+      ],
+      "primary_key": ["product_id"],
+      "row_count": {"min": 50, "max": 500}
+    },
+    "events": {
+      "columns": [
+        {"name": "event_id", "type": "INTEGER", "max_null_rate": 0.0},
+        {"name": "event_ts", "type": "TIMESTAMP", "max_null_rate": 0.0},
+        {"name": "event_type", "type": "STRING", "max_null_rate": 0.02},
+        {"name": "user_id", "type": "INTEGER", "max_null_rate": 0.02}
+      ],
+      "primary_key": ["event_id"],
+      "freshness": {"column": "event_ts", "max_age_hours": 72},
+      "row_count": {"min": 100, "max": 1000}
+    },
+    "inventory": {
+      "columns": [
+        {"name": "product_id", "type": "INTEGER", "max_null_rate": 0.0},
+        {"name": "warehouse", "type": "STRING", "max_null_rate": 0.02},
+        {"name": "quantity", "type": "INTEGER", "max_null_rate": 0.02},
+        {"name": "updated_at", "type": "TIMESTAMP", "max_null_rate": 0.0}
+      ],
+      "primary_key": ["product_id"],
+      "freshness": {"column": "updated_at", "max_age_hours": 168},
+      "row_count": {"min": 500, "max": 5000}
+    },
+    "payments": {
+      "columns": [
+        {"name": "payment_id", "type": "INTEGER", "max_null_rate": 0.0},
+        {"name": "order_id", "type": "INTEGER", "max_null_rate": 0.02},
+        {"name": "amount", "type": "FLOAT", "max_null_rate": 0.02},
+        {"name": "currency", "type": "STRING", "max_null_rate": 0.02},
+        {"name": "payment_ts", "type": "TIMESTAMP", "max_null_rate": 0.0},
+        {"name": "method", "type": "STRING", "max_null_rate": 0.02}
+      ],
+      "primary_key": ["payment_id"],
+      "freshness": {"column": "payment_ts", "max_age_hours": 168},
+      "row_count": {"min": 100, "max": 1000}
+    }
+  }
+}

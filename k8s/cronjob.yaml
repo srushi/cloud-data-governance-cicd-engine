@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: data-governance-audit
+  labels:
+    app: data-governance-validator
+spec:
+  schedule: "0 2 * * *" # daily 02:00 UTC warehouse audit
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app: data-governance-validator
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: audit
+              image: cloud-data-governance-engine:latest
+              args:
+                - "run-audit"
+                - "--source"
+                - "bigquery" # set SNOWFLAKE_*/BIGQUERY_* via envFrom in real clusters
+                - "--report"
+                - "/data/out"
+                - "--fail-on-critical"
+              env:
+                - name: BIGQUERY_PROJECT
+                  value: "example-project"
+                - name: BIGQUERY_DATASET
+                  value: "warehouse"
+              volumeMounts:
+                - name: reports
+                  mountPath: /data/out
+          volumes:
+            - name: reports
+              emptyDir: {}

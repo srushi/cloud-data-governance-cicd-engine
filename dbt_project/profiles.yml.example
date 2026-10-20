@@ -1,0 +1,16 @@
+# Copy to ~/.dbt/profiles.yml and fill in your warehouse credentials.
+# Snowflake example below; a BigQuery profile works the same way with
+# type: bigquery / method: oauth / project / dataset keys.
+warehouse_audit:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: TRANSFORMER
+      database: ANALYTICS
+      warehouse: COMPUTE_WH
+      schema: AUDIT
+      threads: 4

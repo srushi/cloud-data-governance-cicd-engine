@@ -1,0 +1,19 @@
+services:
+  audit:
+    build: .
+    image: cloud-data-governance-engine:latest
+    command: ["run-audit", "--source", "local", "--report", "out"]
+    volumes:
+      - ./out:/app/out
+
+  report-server:
+    build: .
+    image: cloud-data-governance-engine:latest
+    entrypoint: ["python", "-m", "engine.server"]
+    command: ["--port", "8080", "--report-dir", "out"]
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./out:/app/out
+    depends_on:
+      - audit

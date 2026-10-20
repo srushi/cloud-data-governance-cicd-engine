@@ -1,0 +1,8 @@
+[
+  {"table": "orders", "column": "order_id", "check": "duplicate_key"},
+  {"table": "customers", "column": "email", "check": "null_rate"},
+  {"table": "products", "column": "price", "check": "type_drift"},
+  {"table": "events", "column": "event_ts", "check": "freshness"},
+  {"table": "inventory", "column": null, "check": "row_count_anomaly"},
+  {"table": "payments", "column": "currency", "check": "schema_drift"}
+]

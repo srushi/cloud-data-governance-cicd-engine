@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-governance-validator
+  labels:
+    app: data-governance-validator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-governance-validator
+  template:
+    metadata:
+      labels:
+        app: data-governance-validator
+    spec:
+      containers:
+        - name: report-server
+          image: cloud-data-governance-engine:latest
+          args: ["-m", "engine.server", "--port", "8080", "--report-dir", "/data/out"]
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: reports
+              mountPath: /data/out
+      volumes:
+        - name: reports
+          emptyDir: {}
