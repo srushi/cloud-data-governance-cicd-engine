@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-and-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Lint
+        run: flake8 engine scripts tests main.py --max-line-length=100
+
+      - name: Run tests
+        run: python -m pytest -q
+
+      - name: Build Docker image
+        run: docker build -t cloud-data-governance-engine:ci .
+
+      - name: Smoke test - offline demo audit
+        run: |
+          python main.py run-audit --source local --report out/
+          test -f out/exceptions.json
+          test -f out/summary.json
+          python scripts/score_accuracy.py --exceptions out/exceptions.json
+
+      - name: Validate Kubernetes manifests
+        run: |
+          python -c "import yaml,glob; [yaml.safe_load(open(f)) for f in glob.glob('k8s/*.yaml')]; print('k8s manifests parse OK')"
